@@ -6,7 +6,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { IconChevronRight, IconDots } from '@tabler/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { addTab, focusTab } from 'providers/ReduxStore/slices/tabs';
-import { collectionFolderClicked } from 'providers/ReduxStore/slices/collections';
+import { collectionFolderClicked, newRequestExample } from 'providers/ReduxStore/slices/collections';
 import { moveItem } from 'providers/ReduxStore/slices/collections/actions';
 import { sendRequest } from 'providers/ReduxStore/slices/collections/actions';
 import Dropdown from 'components/Dropdown';
@@ -180,6 +180,7 @@ const CollectionItem = ({ item, collection, searchText }) => {
   const sortFolderItems = (items = []) => {
     return items.sort((a, b) => a.name.localeCompare(b.name));
   };
+
   const handleGenerateCode = (e) => {
     e.stopPropagation();
     dropdownTippyRef.current.hide();
@@ -189,6 +190,28 @@ const CollectionItem = ({ item, collection, searchText }) => {
       toast.error('URL is required');
     }
   };
+
+  const handleAddExample = (e) => {
+    e.stopPropagation();
+    dropdownTippyRef.current.hide();
+    dispatch(
+      newRequestExample({
+        itemUid: item.uid,
+        collectionUid: collection.uid,
+        // TODO: Use real example
+        example: {
+          url: item.request.url,
+          method: item.request.method,
+          headers: item.request.headers,
+          params: item.request.params,
+          auth: item.request.auth,
+          body: item.request.body,
+          docs: item.request.docs
+        }
+      })
+    );
+  };
+
   const requestItems = sortRequestItems(filter(item.items, (i) => isItemARequest(i)));
   const folderItems = sortFolderItems(filter(item.items, (i) => isItemAFolder(i)));
 
@@ -335,6 +358,16 @@ const CollectionItem = ({ item, collection, searchText }) => {
                   }}
                 >
                   Generate Code
+                </div>
+              )}
+              {!isFolder && item.type === 'http-request' && (
+                <div
+                  className="dropdown-item"
+                  onClick={(e) => {
+                    handleAddExample(e);
+                  }}
+                >
+                  Add Example
                 </div>
               )}
               <div

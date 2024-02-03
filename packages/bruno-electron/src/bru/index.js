@@ -166,6 +166,7 @@ const jsonToBru = (json) => {
     headers: _.get(json, 'request.headers', []),
     auth: _.get(json, 'request.auth', {}),
     body: _.get(json, 'request.body', {}),
+    examples: _.get(json, 'request.examples', []),
     script: _.get(json, 'request.script', {}),
     vars: {
       req: _.get(json, 'request.vars.req', []),

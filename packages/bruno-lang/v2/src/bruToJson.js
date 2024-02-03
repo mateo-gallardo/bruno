@@ -22,7 +22,7 @@ const { outdentString } = require('../../v1/src/utils');
  *
  */
 const grammar = ohm.grammar(`Bru {
-  BruFile = (meta | http | query | headers | auths | bodies | varsandassert | script | tests | docs)*
+  BruFile = (meta | http | query | headers | auths | bodies | varsandassert | script | tests | docs | examples)*
   auths = authawsv4 | authbasic | authbearer | authdigest 
   bodies = bodyjson | bodytext | bodyxml | bodysparql | bodygraphql | bodygraphqlvars | bodyforms | body
   bodyforms = bodyformurlencoded | bodymultipart
@@ -97,6 +97,7 @@ const grammar = ohm.grammar(`Bru {
   scriptres = "script:post-response" st* "{" nl* textblock tagend
   tests = "tests" st* "{" nl* textblock tagend
   docs = "docs" st* "{" nl* textblock tagend
+  examples = "examples" st* "{" nl* textblock tagend
 }`);
 
 const mapPairListToKeyValPairs = (pairList = [], parseEnabled = true) => {
@@ -499,6 +500,12 @@ const sem = grammar.createSemantics().addAttribute('ast', {
   docs(_1, _2, _3, _4, textblock, _5) {
     return {
       docs: outdentString(textblock.sourceString)
+    };
+  },
+  // TODO: Akshat Khosya. We should wait for Anoop to merge the new Bru Lang version before implementing this (https://github.com/brulang/bru-lang), because much of this file will change.
+  examples(_1, _2, _3, _4, textblock, _5) {
+    return {
+      examples: outdentString(textblock.sourceString)
     };
   }
 });

@@ -319,6 +319,23 @@ export const collectionsSlice = createSlice({
         collection.items.push(item);
       }
     },
+    newRequestExample: (state, action) => {
+      const collection = findCollectionByUid(state.collections, action.payload.collectionUid);
+
+      if (collection) {
+        const item = findItemInCollection(collection, action.payload.itemUid);
+
+        if (item) {
+          if (!item.draft) {
+            item.draft = cloneDeep(item);
+          }
+
+          item.draft.request.examples = [...(item.draft.request.examples || []), action.payload.example]; // TODO: Allow sorting by seq?
+        }
+
+        console.log('item', item.draft.request.examples);
+      }
+    },
     collectionClicked: (state, action) => {
       const collection = findCollectionByUid(state.collections, action.payload);
 
@@ -1397,6 +1414,7 @@ export const {
   saveRequest,
   deleteRequestDraft,
   newEphemeralHttpRequest,
+  newRequestExample,
   collectionClicked,
   collectionFolderClicked,
   requestUrlChanged,

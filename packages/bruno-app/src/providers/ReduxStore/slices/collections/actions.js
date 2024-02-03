@@ -70,6 +70,7 @@ export const saveRequest = (itemUid, collectionUid) => (dispatch, getState) => {
     }
 
     const itemToSave = transformRequestToSaveToFilesystem(item);
+    console.log('itemToSave', itemToSave);
     const { ipcRenderer } = window;
 
     itemSchema

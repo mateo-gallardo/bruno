@@ -12,8 +12,19 @@ const stripLastLine = (text) => {
   return text.replace(/(\r?\n)$/, '');
 };
 
+// TODO: Akshat Khosya
+const examplesToBru = (examples) => {
+  if (!examples || !examples.length) return '';
+
+  // TODO: I think this should be an array in the new Bru Lang version
+  return `examples {
+${JSON.stringify(examples, null, 2)}
+}`;
+};
+
 const jsonToBru = (json) => {
-  const { meta, http, query, headers, auth, body, script, tests, vars, assertions, docs } = json;
+  const { meta, http, query, headers, auth, body, script, tests, vars, assertions, docs, examples } = json;
+  console.log('examples', examples);
 
   let bru = '';
 
@@ -320,6 +331,8 @@ ${indentString(docs)}
 
 `;
   }
+
+  bru += examplesToBru(examples);
 
   return stripLastLine(bru);
 };
